@@ -42,25 +42,34 @@ footer{color:var(--muted);font-size:13px;text-align:center}
 </style></head><body><div class="wrap">
 <header class="top">
 <h1>План разработки Ю-Клуб</h1>
-<div class="status">Разработка запущена 01.11.2026 · Этап 0 в работе</div>
+<div class="status">Этапы 0 и 1 готовы · Этап 2 в подготовке · 02.11.2026</div>
 <div class="meta">Сеть компьютерных клубов: сайт, личный кабинет клиента, CRM. Версия 2 от 01.11.2026.</div>
 <div class="voice"><b>Голосовой итог (меньше минуты)</b><audio controls preload="none" src="itog.mp3"></audio></div>
 </header>
-<section id="hod"><h2>Ход работ на 01.11</h2>
+<section id="hod"><h2>Ход работ на 02.11</h2>
 <h3>Этап 0 (фундамент) – готов, КТ A</h3>
 <p>Ядро (время филиала, идемпотентность, журнал операций со сторно, outbox, аудит), вход сотрудников, права роль × зона × действие, сеть, настройки с наследованием, справочники, бэкап с проверкой восстановления, CRM-каркас.</p>
-<p>Каждая ветка прошла независимую ревизию. Найдено и исправлено:</p>
-<ul><li>open redirect в CRM;</li><li>общий IP за прокси – лимит входа закрыл бы вход всем;</li><li>утечка существования чужих филиалов по 403/404;</li><li>гонка двойной брони в контракте занятости;</li><li>остановка очереди событий.</li></ul>
-<h3>Этап 1 – в работе</h3>
-<p><b>Готово:</b> ресурсы и составная VR-комната (50 параллельных попыток – ровно одна бронь), календарь и исключения, тарифы, клиенты и вход по SMS-коду, публичный сайт (город/филиал, вход, кабинет), CRM: сеть, справочники, клиенты, сотрудники.</p>
-<p><b>Делается сейчас:</b> доступность → удержание 15 мин → подтверждение брони, экраны ресурсов, графика и тарифов в CRM, web push.</p>
-<h3>Тесты, стенд, код</h3>
-<ul><li>531 автотест бэкенда + e2e CRM и сайта; CI зелёный.</li>
-<li>Стенд на нашем Beget (noindex): сайт <a href="https://yu-club.45.12.72.227.nip.io" rel="nofollow">yu-club.45.12.72.227.nip.io</a>, CRM <a href="https://yu-crm.45.12.72.227.nip.io" rel="nofollow">yu-crm.45.12.72.227.nip.io</a> (вход – у Артёма).</li>
-<li>Код – приватный репо tema-mail/yu-club. Доступ к репо заказчика – по-прежнему 404 у tema-mail.</li></ul>
+<h3>Этап 1 (операционный MVP) – готов, КТ B</h3>
+<ul><li><b>Запись:</b> ресурсы и составная VR-комната, график и исключения, тарифы, доступность, удержание 15 мин, бронь, перенос и отмена, приход / неявка / завершение, бронь администратором, клиенты и вход по SMS-коду.</li>
+<li><b>Сайт:</b> выбор клуба, страницы филиалов и комнат, расписание, оформление записи, ЛК «Мои записи», уведомления.</li>
+<li><b>CRM:</b> расписание дня и недели, карточка брони, ресурсы, график, блокировки, тарифы, клиенты, сотрудники.</li>
+<li><b>Уведомления:</b> web push с напоминаниями в 21:00 накануне и за 15 минут, фоновый процесс.</li></ul>
+<h3>Проверки</h3>
+<ul><li>684 автотеста бэкенда + e2e CRM (68) и сайта (57) в CI.</li>
+<li>Нагрузочный тест: 200 клиентов на 3 слота VR-комнаты – ноль двойных броней, p95 удержания ≈1,1 с (норма 2 с).</li>
+<li>Сквозной e2e на живом стенде (полный цикл клиент → CRM → посещение, отмены, 6 сценариев VR+PS4 из ТЗ) – 10/10 дважды подряд.</li></ul>
+<h3>Независимая ревизия каждой ветки – что найдено и исправлено</h3>
+<ul><li>Этап 0: open redirect в CRM; общий IP за прокси (лимит входа закрыл бы вход всем); утечка существования чужих филиалов по 403/404; гонка двойной брони в контракте занятости; остановка очереди событий.</li>
+<li>Этап 1: гонка двойной брони при смене состава комнаты; общий IP за прокси на публичных маршрутах; SSRF через редирект в push; push после выхода из ЛК; перенос начавшегося сеанса; ключ VAPID на байт короче в 1 из 256 случаев.</li></ul>
+<h3>Этап 2 (касса, оплата, баллы, сертификаты) – подготовка кода</h3>
+<p>Спланирован до шагов (52 шага), прошёл verify-plan и ревью архитектуры: до начала кода исправлены 4 серьёзных дефекта в контрактах.</p>
+<h3>Стенд и код</h3>
+<ul><li>Стенд на нашем Beget (noindex): сайт <a href="https://yu-club.45.12.72.227.nip.io" rel="nofollow">yu-club.45.12.72.227.nip.io</a>, CRM <a href="https://yu-crm.45.12.72.227.nip.io" rel="nofollow">yu-crm.45.12.72.227.nip.io</a> (вход – у Артёма).</li>
+<li>Код – приватный репо tema-mail/yu-club.</li>
+<li>Код заказчика: присланный архив оказался нашим собственным репо; нужен архив или доступ к <code>AndreikinRoman/yu-club</code>.</li></ul>
 <h3>Нужно от Артёма</h3>
-<ul><li>Проверить, на какой логин выдан доступ к <code>AndreikinRoman/yu-club</code>.</li>
-<li>Ответы на блокирующие вопросы – <a href="#voprosy">раздел «Вопросы к заказчику»</a>.</li></ul>
+<ul><li>Архив или доступ к <code>AndreikinRoman/yu-club</code> (проверить, на какой логин выдан).</li>
+<li>Ответы на блокирующие вопросы, в том числе новые Q-101…Q-105 (окно прихода, баллы при возврате денег, штраф ниже −50, возврат при отмене посещения, длина кода сертификата) – <a href="#voprosy">раздел «Вопросы к заказчику»</a>.</li></ul>
 </section>
 <section id="status"><p>Версия 2 от 01.11.2026 (внесены решения владельца от 01.11). Автор – техлид проекта. Источник: <code>tz/01…20</code>, разборы <code>docs/razbor/*.md</code>.
 Ссылки «18 §5.2» – файл ТЗ и пункт. «R-xx» – риск из реестра 20 §6. «N-xx» – новый блокер, которого в реестре 20 нет.
@@ -91,7 +100,7 @@ footer{color:var(--muted);font-size:13px;text-align:center}
 </tr>
 </tbody></table>
 </div></section>
-<nav class="toc"><b>Оглавление</b><ol><li><a href="#hod">Ход работ на 01.11</a></li><li><a href="#s1">1. Что строим и границы</a></li><li><a href="#s2">2. Блокеры до старта</a></li><li><a href="#s3">3. Архитектура</a></li><li><a href="#s4">4. Единый план этапов</a></li><li><a href="#s5">5. Граф зависимостей и параллельные потоки</a></li><li><a href="#s6">6. Детальная разбивка этапов 0 и 1</a></li><li><a href="#s7">7. Критический путь и сроки</a></li><li><a href="#s8">8. Тестовая стратегия</a></li><li><a href="#s9">9. Риски</a></li><li><a href="#s10">10. Вопросы к заказчику</a></li><li><a href="#s11">11. Журнал «прогноз / факт»</a></li><li><a href="#voprosy">Вопросы к заказчику</a></li></ol></nav>
+<nav class="toc"><b>Оглавление</b><ol><li><a href="#hod">Ход работ на 02.11</a></li><li><a href="#s1">1. Что строим и границы</a></li><li><a href="#s2">2. Блокеры до старта</a></li><li><a href="#s3">3. Архитектура</a></li><li><a href="#s4">4. Единый план этапов</a></li><li><a href="#s5">5. Граф зависимостей и параллельные потоки</a></li><li><a href="#s6">6. Детальная разбивка этапов 0 и 1</a></li><li><a href="#s7">7. Критический путь и сроки</a></li><li><a href="#s8">8. Тестовая стратегия</a></li><li><a href="#s9">9. Риски</a></li><li><a href="#s10">10. Вопросы к заказчику</a></li><li><a href="#s11">11. Журнал «прогноз / факт»</a></li><li><a href="#voprosy">Вопросы к заказчику</a></li></ol></nav>
 <section><h2 id="s1">1. Что строим и границы</h2><p>Одна система для сети компьютерных клубов «Ю-Клуб» (мультигород, несколько филиалов в городе):</p>
 <ul>
 <li><strong>публичный сайт</strong> – филиалы, зоны ПК/VR/PS, комнаты, каталог игр, новости/акции/розыгрыши, страница дня рождения, онлайн-запись (12, 19);</li>
@@ -1003,8 +1012,23 @@ footer{color:var(--muted);font-size:13px;text-align:center}
 </tr>
 <tr>
 <td>K10</td>
-<td>«Сеанс оплаты» (R-04): по умолчанию одна бронь = один сеанс; составной визит – несколько броней, у каждой свой платёж</td>
+<td>«Сеанс оплаты» (R-04): по умолчанию одна бронь = один сеанс; составной визит – несколько броней, у каждой свой платёж. Финальная версия для Э2 – 02.11.2026 (6.4)</td>
 <td>П8</td>
+</tr>
+<tr>
+<td>K15</td>
+<td>Баллы: партии со сроком, резерв с удержанием, начисление, штраф с обрезкой −50, блокировка записи, возврат в исходную партию (Э2, 6.4)</td>
+<td>П8b, П5</td>
+</tr>
+<tr>
+<td>K16</td>
+<td>Сертификаты: продажа, номер и код, срок 6 мес, погашение, сгорание, остаток (Э2, 6.4)</td>
+<td>П8c, П5</td>
+</tr>
+<tr>
+<td>K17</td>
+<td>Касса филиала: два места денег, операции, сторно, закрытие месяца, смена за флагом, сводка (Э2, 6.4)</td>
+<td>П8a, П9a, П9b, П9c</td>
 </tr>
 </tbody></table>
 </div><hr>
@@ -1452,7 +1476,7 @@ deploy/        compose, Caddy, бэкап</code></pre></div><h3 id="h-6-1-эта
 <tbody><tr>
 <td>S1-26</td>
 <td>Нагрузочный тест гонки: 200 клиентов на 3 слота VR-комнаты одновременно, аренда комнаты против мест</td>
-<td><code>tests/load/booking-race.js</code></td>
+<td><code>tests/load/booking-race.ts</code> (<code>npm run load:race</code>)</td>
 <td>ноль двойных броней (запрос к базе после прогона); p95 удержания ≤2 с</td>
 <td>S1-08, S1-28</td>
 </tr>
@@ -1544,7 +1568,782 @@ deploy/        compose, Caddy, бэкап</code></pre></div><h3 id="h-6-1-эта
 <td>18 §9.4</td>
 </tr>
 </tbody></table>
-</div><hr>
+</div><h3 id="h-6-4-детальная-разбивка-этапа-2-коммерческий-контур">6.4. Детальная разбивка этапа 2 – коммерческий контур</h3><p>Контракты: K10 (сеанс оплаты, финальный), K15 (баллы), K16 (сертификаты), K17 (касса). Правила шага – как в 6.1–6.2: ≤3 файлов кода, файл ≤800 строк, проверка, отдельный коммит. Пометки: «по умолчанию, ждёт заказчика (Q-xx)» – умолчание, выключается или меняется настройкой; «решение» – вывод архитектора, не пункт ТЗ.</p>
+<p><strong>Что меняется против эпиков 6.3 (решения, основания – в контрактах):</strong></p>
+<ol>
+<li>Оплата – только после прихода, при закрытии сеанса администратором (13 §12.1 п.8–9); предоплаты в Э2 нет (Q-20). «Сеанс закрыт» = проведённый платёж (K10 §1).</li>
+<li>Начисление баллов – не по <code>visit.confirmed</code>, а когда у брони есть и посещение, и платёж не баллами (07 §4.4, Q-40); одно начисление на бронь держит база (K15 §4).</li>
+<li>R-03: строгое «один сеанс – один способ» по умолчанию, исключение «сертификат + доплата деньгами» – флаг <code>payment.certificate_topup_enabled</code>, модель платежа с 1–2 строками готова к обоим решениям без миграции (K10 §2).</li>
+<li>Касса одна, места денег два: наличные и безнал – отдельные счета K3, способ – в операции; сверка смены – только наличных, за флагом (K17 §2, §7; разбор 05–08, модуль 06, дыра 1).</li>
+<li>Резерв баллов не хранит своего срока – живёт, пока живо удержание; переходит на бронь при подтверждении, списывается при оплате, снимается при отмене и неявке (K15 §3; 07 §6.3; Q-46).</li>
+<li>Блокировка записи на −50 – отдельный код <code>LOYALTY_LIMIT_REACHED</code> с текстом 07 §9.2; обход в CRM – только Владелец и Директор с причиной (R-13).</li>
+</ol>
+<p>Вне 6.4: тарифы по дням недели и акции (таблица 4.2 относила их к Э2) – только после утверждения измерений (15 §9.1 «остальные измерения добавляются после утверждения»); шаги добавятся отдельной оценкой. Подарок имениннику – Э3 (4.3 п.6). Экспорт и отчёты 14 – Э4.</p>
+<h4 id="h-6-4-1-миграции-и-порядок-слияния">6.4.1. Миграции и порядок слияния</h4><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>№</th>
+<th>Файл</th>
+<th>Таблицы</th>
+<th>FK наружу</th>
+<th>Отложенные FK, добавляемые здесь</th>
+<th>Шаг</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0201</td>
+<td><code>0201_ledger_limit.sql</code></td>
+<td>– (замена функции <code>journal.ledger_apply_balance</code>: нижний предел проверяется только при <code>NEW.amount &lt; 0</code>)</td>
+<td>–</td>
+<td>–</td>
+<td>S2-07</td>
+</tr>
+<tr>
+<td>0202</td>
+<td><code>0202_finance.sql</code></td>
+<td><code>finance_categories</code>, <code>journal.finance_operations</code>, <code>finance_opening_balances</code>, <code>finance_periods</code>; <code>ledger_accounts.kind</code> + <code>cash_branch_noncash</code>; посев категорий 06 §7.3</td>
+<td><code>→ branches</code>, <code>→ staff</code>, <code>→ ledger_accounts</code></td>
+<td>–</td>
+<td>S2-10</td>
+</tr>
+<tr>
+<td>0203</td>
+<td><code>0203_loyalty.sql</code></td>
+<td><code>loyalty_batches</code>, <code>journal.loyalty_batch_moves</code>, <code>loyalty_accruals</code>, <code>loyalty_penalties</code>, <code>loyalty_reserves</code>, <code>loyalty_issues</code></td>
+<td><code>→ clients</code>, <code>→ ledger_accounts</code>, <code>→ ledger_entries</code>, <code>→ bookings</code>, <code>→ holds</code>, <code>→ visits</code>, <code>→ no_shows</code>, <code>→ branches</code></td>
+<td>–</td>
+<td>S2-30</td>
+</tr>
+<tr>
+<td>0204</td>
+<td><code>0204_certificates.sql</code></td>
+<td><code>certificates</code>, <code>certificate_redemptions</code>, <code>journal.certificate_holder_history</code></td>
+<td><code>→ branches</code>, <code>→ staff</code>, <code>→ clients</code>, <code>→ ledger_accounts</code>, <code>→ finance_operations</code></td>
+<td>–</td>
+<td>S2-50</td>
+</tr>
+<tr>
+<td>0205</td>
+<td><code>0205_payments.sql</code></td>
+<td><code>payment_sessions</code>, <code>payments</code>, <code>payment_lines</code>, <code>payment_refunds</code></td>
+<td><code>→ bookings</code>, <code>→ branches</code>, <code>→ clients</code>, <code>→ finance_operations</code>, <code>→ certificates</code></td>
+<td><code>certificate_redemptions.payment_id → payments</code>, <code>loyalty_accruals.payment_id → payments</code> (поэтому S2-20 ждёт слитых 0203 и 0204)</td>
+<td>S2-20</td>
+</tr>
+<tr>
+<td>0206</td>
+<td><code>0206_cash_shifts.sql</code></td>
+<td><code>cash_shifts</code></td>
+<td><code>→ branches</code>, <code>→ staff</code>, <code>→ finance_operations</code></td>
+<td><code>finance_operations.shift_id → cash_shifts</code></td>
+<td>S2-16</td>
+</tr>
+<tr>
+<td>0207</td>
+<td><code>0207_loyalty_goods.sql</code></td>
+<td><code>loyalty_goods</code>, <code>loyalty_goods_branches</code>, <code>loyalty_goods_orders</code></td>
+<td><code>→ branches</code>, <code>→ clients</code>, <code>→ ledger_entries</code></td>
+<td>–</td>
+<td>S2-39</td>
+</tr>
+</tbody></table>
+</div><p><strong>Правило слияния (факт кода):</strong> раннер отказывает, если есть неприменённая миграция младше последней применённой (<code>db/migrate.ts:112–114</code>, «порядок нарушен»). Значит, миграции сливаются в <code>main</code> строго по номеру. Поток, чья младшая миграция задерживается, не держит остальных: до первого применения на стенде номер можно поменять местами (файл ещё нигде не применён) – решение принимает техлид при слиянии и правит эту таблицу. Каждая миграция – вверх, вниз, вверх на чистой базе (model-dannyh §1).</p>
+<p>Порядок номеров = порядок слияния по зависимостям (правка по ревью 02.11): 0201 – подготовка; 0202 – первый шаг кассы; 0203 и 0204 – первые шаги баллов и сертификатов; 0205 – оплата (после 0202–0204); 0206 – смена, которую поток П8a делает <strong>после</strong> S2-22 (S2-16 и S2-17 переставлены в конец потока); 0207 – товары, поздний шаг баллов.</p>
+<h4 id="h-6-4-2-шаги">6.4.2. Шаги</h4><p><strong>Подготовка (техлид, последовательно, до развилки потоков)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Что делаем</th>
+<th>Файлы / зона</th>
+<th>Проверка</th>
+<th>Зависит</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2-00</td>
+<td>Документы: правки K1, K3, K4, K5, K7, K9, K11 по K10 §10; <code>model-dannyh.md</code> – разделы 0201–0207; реестр решений Э2 со статусом «принято по умолчанию»</td>
+<td><code>docs/*</code> (не код)</td>
+<td><code>architecture-reviewer</code> по K10, K15–K17; затем <code>verify-plan</code> по 6.4</td>
+<td>КТ B</td>
+</tr>
+<tr>
+<td>S2-01</td>
+<td>Реестр прав и настроек Э2: действия K10 §8, K15 §10, K16 §9, K17 §8; ключи K15 §13, K17 §12 (решение: расширяем общую таблицу <code>MATRIX</code>, а не <code>actions.ts</code> модулей – одно место до развилки, без конфликтов слияния)</td>
+<td><code>apps/api/src/core/permissions.ts</code>, <code>apps/api/src/core/settings.ts</code>, <code>tests/core/permissions-e2.test.ts</code></td>
+<td>табличный тест роль × действие; Директор не получает <code>finance.correct</code>, <code>finance.opening_balance</code>, <code>certificate.correct</code>; Администратор – только <code>finance.payment.record</code>, <code>finance.payment.view</code>, <code>finance.expense.create</code>, <code>finance.view.day</code>, <code>finance.shift.operate</code>, <code>loyalty.view</code>, <code>loyalty.goods.issue</code>, <code>certificate.view</code>, <code>certificate.link</code>; умолчания ключей совпадают с контрактами</td>
+<td>S2-00</td>
+</tr>
+<tr>
+<td>S2-02</td>
+<td>Каркас <code>finance</code>: коды ошибок K10 §7 и K17 §11, действия аудита</td>
+<td><code>apps/api/src/modules/finance/errors.ts</code>, <code>apps/api/src/modules/finance/audit.ts</code>, <code>apps/api/src/core/registry.ts</code></td>
+<td>старт сервера и <code>tests/core</code> зелёные; дубль кода с другим модулем роняет загрузку</td>
+<td>S2-01</td>
+</tr>
+<tr>
+<td>S2-03</td>
+<td>Каркас <code>loyalty</code>: ошибки K15 §12, аудит</td>
+<td><code>modules/loyalty/errors.ts</code>, <code>modules/loyalty/audit.ts</code>, <code>core/registry.ts</code></td>
+<td>то же</td>
+<td>S2-02</td>
+</tr>
+<tr>
+<td>S2-04</td>
+<td>Каркас <code>certificates</code>: ошибки K16 §12, аудит</td>
+<td><code>modules/certificates/errors.ts</code>, <code>modules/certificates/audit.ts</code>, <code>core/registry.ts</code></td>
+<td>то же</td>
+<td>S2-03</td>
+</tr>
+<tr>
+<td>S2-05</td>
+<td>Провайдеры <code>booking</code> для Э2: <code>payableBooking</code> (статус, цена версии, минуты, тип ресурса, клиент), <code>activeVisit</code>, <code>adjacentChain</code> (брони клиента подряд), <code>holdBookings</code></td>
+<td><code>apps/api/src/modules/booking/providers.ts</code>, <code>tests/booking/providers-e2.test.ts</code></td>
+<td>бронь <code>confirmed</code>/<code>no_show</code> – не к оплате; перенос – цена новой версии; цепочка 14:00–15:00 + 15:00–16:00 одна, с разрывом – две</td>
+<td>КТ B</td>
+</tr>
+<tr>
+<td>S2-06</td>
+<td>Реестр способов оплаты, типы событий <code>payment.recorded/refunded</code> (K10 §5–6), <code>AggregateType</code> + <code>payment</code>, <code>certificate</code> – чтобы баллы и сертификаты писали обработчики, не дожидаясь S2-20</td>
+<td><code>apps/api/src/modules/finance/methods.ts</code>, <code>apps/api/src/core/outbox.ts</code>, <code>tests/finance/methods.test.ts</code></td>
+<td>регистрация дубля способа – ошибка при старте; типы событий проверяются компилятором в обработчике-заглушке теста; события Э1 не изменились (тесты <code>tests/core/outbox*</code> зелёные)</td>
+<td>S2-02</td>
+</tr>
+<tr>
+<td>S2-07</td>
+<td>Миграция 0201: предел счёта K3 – только для списаний. Сейчас триггер (<code>0004_ledger.sql:112</code>) отклоняет любую запись, после которой баланс ниже <code>min_balance</code>, даже положительную: при балансе −60 (ниже предела после корректировки Владельца) не пройдут начисление, возврат, сторно штрафа</td>
+<td><code>db/migrations/0201_ledger_limit.sql</code>, <code>tests/core/ledger-limit.test.ts</code></td>
+<td>при −60: +5, возврат и сторно штрафа проходят; −1 без <code>limit_override</code> – <code>BALANCE_BELOW_LIMIT</code>; старые тесты <code>tests/core/ledger.test.ts</code> зелёные; вверх/вниз/вверх</td>
+<td>КТ B</td>
+</tr>
+<tr>
+<td>S2-08</td>
+<td>Идемпотентность с маскировкой секрета: <code>runIdempotent</code> получает <code>redact(body)</code> для сохраняемого ответа и <code>hashBody(body)</code> для <code>request_hash</code> (K16 §3: код сертификата не хранится в <code>idempotency_keys</code>)</td>
+<td><code>apps/api/src/core/idempotency.ts</code>, <code>tests/core/idempotency-redact.test.ts</code></td>
+<td>повтор продажи – тот же сертификат, ответ без кода и с <code>pinShownOnce: true</code>; в <code>response_body</code> и <code>request_hash</code> кода нет (поиск по таблице в тесте); маршруты без опций работают как раньше</td>
+<td>КТ B</td>
+</tr>
+</tbody></table>
+</div><p><strong>Поток «Касса» (П8a, K17)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Что делаем</th>
+<th>Файлы / зона</th>
+<th>Проверка</th>
+<th>Зависит</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2-10</td>
+<td>Миграция 0202 и вид счёта <code>cash_branch_noncash</code>, тип ссылки <code>payment</code></td>
+<td><code>db/migrations/0202_finance.sql</code>, <code>apps/api/src/core/ledger.ts</code>, <code>tests/finance/schema.test.ts</code></td>
+<td>вверх/вниз/вверх; два места денег на филиал, третье – <code>UNIQUE</code>; <code>UPDATE</code>/<code>DELETE finance_operations</code> от <code>yu_app</code> → <code>42501</code>; категории 06 §7.3 засеяны</td>
+<td>S2-02</td>
+</tr>
+<tr>
+<td>S2-11</td>
+<td>Ядро кассы: места денег, <code>postMoneyOperation</code>, начальный остаток, доход, расход, изъятие, перевод между местами, правило отрицательной кассы, предпросмотр</td>
+<td><code>apps/api/src/modules/finance/cashbox.ts</code>, <code>tests/finance/cashbox.test.ts</code></td>
+<td>06 §17 п.3, 4, 9, 12, 16; property-based формула 06 §3.2 по каждому месту; <code>OPENING_BALANCE_EXISTS</code>; <code>CASH_INSUFFICIENT</code> при <code>false</code>, проход при <code>true</code>; <code>SESSION_INCOME_VIA_PAYMENT</code></td>
+<td>S2-10, S2-01</td>
+</tr>
+<tr>
+<td>S2-12</td>
+<td>Категории: два уровня, порядок, архив, подкатегория обязательна при наличии</td>
+<td><code>modules/finance/categories.ts</code>, <code>tests/finance/categories.test.ts</code></td>
+<td>третий уровень – отказ; использованная – только архив (06 §17 п.11); <code>SUBCATEGORY_REQUIRED</code>, <code>CATEGORY_ARCHIVED</code></td>
+<td>S2-10</td>
+</tr>
+<tr>
+<td>S2-13</td>
+<td>Сторно, исправление (сторно + новая), закрытие месяца</td>
+<td><code>modules/finance/corrections.ts</code>, <code>tests/finance/corrections.test.ts</code></td>
+<td>исходная операция цела (18 §6.3 п.10, 06 §17 п.15); второе сторно → <code>ALREADY_REVERSED</code> (ловит <code>UNIQUE</code>); операция в закрытом месяце → <code>PERIOD_CLOSED</code>; сторно и исправление прихода с источником <code>session</code> → <code>USE_PAYMENT_REFUND</code>, <code>certificate_sale</code> → <code>USE_CERTIFICATE_CANCEL</code>; сторно прихода, уводящее место в минус при запрете, → <code>CASH_INSUFFICIENT</code></td>
+<td>S2-11</td>
+</tr>
+<tr>
+<td>S2-14</td>
+<td>API CRM кассы №37–47</td>
+<td><code>modules/finance/routes.crm.ts</code>, <code>apps/api/src/server.ts</code>, <code>tests/finance/routes.crm.test.ts</code></td>
+<td>IDOR по каждому маршруту → <code>404</code>; Администратор видит только сутки без остатков; <code>Idempotency-Key</code>: повтор – та же операция</td>
+<td>S2-11, S2-12, S2-13</td>
+</tr>
+<tr>
+<td>S2-15</td>
+<td>Сводка кассы филиала и сети №48, деньги отдельно от баллов и погашений</td>
+<td><code>modules/finance/summary.ts</code>, <code>modules/finance/routes.crm.ts</code>, <code>tests/finance/summary.test.ts</code></td>
+<td>каждое число = сумма своих операций (TC-20 для кассы, 16 §14); сутки по зоне филиала при чужом <code>TZ</code> машины; переводы между местами и изъятия не входят в результат</td>
+<td>S2-14, S2-20</td>
+</tr>
+<tr>
+<td>S2-16</td>
+<td>Миграция 0206 и кассовая смена за флагом</td>
+<td><code>db/migrations/0206_cash_shifts.sql</code>, <code>modules/finance/shift.ts</code>, <code>tests/finance/shift.test.ts</code></td>
+<td>флаг <code>false</code> – смены нет, операции идут; <code>true</code> – без смены <code>CASH_SHIFT_REQUIRED</code>; вторая открытая – отказ; расхождение не проводится само</td>
+<td>S2-11, S2-22 (номер 0206 – после слитой 0205)</td>
+</tr>
+<tr>
+<td>S2-17</td>
+<td>API смены №49–50</td>
+<td><code>modules/finance/routes.crm.ts</code>, <code>tests/finance/shift.routes.test.ts</code></td>
+<td>Администратор не получает <code>expected</code>/<code>diff</code>; <code>resolve</code> – только Директор/Владелец, корректировка со ссылкой на смену</td>
+<td>S2-16, S2-14</td>
+</tr>
+</tbody></table>
+</div><p><strong>Поток «Оплата» (П8a после кассы, K10)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Что делаем</th>
+<th>Файлы / зона</th>
+<th>Проверка</th>
+<th>Зависит</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2-20</td>
+<td>Миграция 0205, сеанс оплаты, <code>recordPayment</code> для <code>cash/card/transfer/none</code>, правило одного способа и флаг R-03, <code>getPaymentStatus</code>, <code>listUnpaid</code>, событие <code>payment.recorded</code></td>
+<td><code>db/migrations/0205_payments.sql</code>, <code>apps/api/src/modules/finance/payment.ts</code>, <code>tests/finance/payment.test.ts</code></td>
+<td>TC-07: все пары способов → <code>PAYMENT_METHODS_COMBINED</code> (сертификат – обработчик-заглушка через S2-06); 50 параллельных оплат одной брони → один платёж (индекс); повтор с ключом – тот же <code>paymentId</code>; <code>BOOKING_NOT_PAYABLE</code>; <code>drain</code>: после обработчика сверка «списано сертификатом + денежная строка = к оплате», иначе откат; <code>receiptIssued</code> сохраняется в операции кассы (Q-23)</td>
+<td>S2-05, S2-06, S2-11, слиты 0203 (S2-30) и 0204 (S2-50)</td>
+</tr>
+<tr>
+<td>S2-21</td>
+<td>Возврат: деньги частично и целиком, баллы и сертификат – целиком через обработчики; повторная оплата после полного возврата</td>
+<td><code>modules/finance/refund.ts</code>, <code>tests/finance/refund.test.ts</code></td>
+<td>возврат не удаляет платёж (06 §17 п.14); <code>REFUND_EXCEEDS_PAID</code>; <code>attempt=2</code> после полного возврата, <code>ALREADY_PAID</code> после частичного</td>
+<td>S2-20</td>
+</tr>
+<tr>
+<td>S2-22</td>
+<td>API оплаты №19–23</td>
+<td><code>modules/finance/routes.payments.ts</code>, <code>apps/api/src/server.ts</code>, <code>tests/finance/payment.routes.test.ts</code></td>
+<td><code>allowedMethods</code> считает сервер; IDOR; Администратор проводит оплату, не делает возврат</td>
+<td>S2-21</td>
+</tr>
+</tbody></table>
+</div><p><strong>Поток «Баллы» (П8b, K15)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Что делаем</th>
+<th>Файлы / зона</th>
+<th>Проверка</th>
+<th>Зависит</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2-30</td>
+<td>Миграция 0203, счёт, партии, FEFO, долг, <code>returnSpend</code>, <code>getBalance</code></td>
+<td><code>db/migrations/0203_loyalty.sql</code>, <code>apps/api/src/modules/loyalty/account.ts</code>, <code>tests/loyalty/account.test.ts</code></td>
+<td>property-based: <code>Σ remaining = max(0, баланс)</code>, <code>баланс = Σ K3</code>; возврат с истёкшей партией – часть «не возвращено», исходный срок сохранён (18 §6.3 п.9)</td>
+<td>S2-03, S2-01</td>
+</tr>
+<tr>
+<td>S2-31</td>
+<td>Начисление: обработчики <code>payment.recorded</code>, <code>visit.confirmed</code>, <code>visit.reverted</code>; <code>loyalty_issues</code></td>
+<td><code>modules/loyalty/accrual.ts</code>, <code>apps/api/src/worker.ts</code>, <code>tests/loyalty/accrual.test.ts</code></td>
+<td>TC-09: двойная доставка обоих событий в любом порядке → одно начисление; оплата баллами – нет; 20 мин → 3,0; сторно ниже −50 → issue, не обход; полный возврат платежа → сторно начисления, повторная оплата баллами → начисления нет (Q-40), деньгами → новое начисление; состояние (посещение, живой платёж, способ) читается из базы под блокировкой счёта, а не из payload (доставка не по порядку)</td>
+<td>S2-30, S2-05, S2-06</td>
+</tr>
+<tr>
+<td>S2-32</td>
+<td>Штраф: <code>no_show.marked/reverted</code>, обрезка у −50, <code>penalty_scope</code>, <code>penalties_from</code></td>
+<td><code>modules/loyalty/penalty.ts</code>, <code>apps/api/src/worker.ts</code>, <code>tests/loyalty/penalty.test.ts</code></td>
+<td>TC-10: −48 → −50, следующий – событие без изменения; при −52 (ниже предела по праву Владельца) штраф 0, а не +2 (<code>applied = min(0, …)</code>); неявка до <code>penalties_from</code> – без штрафа; цепочка подряд – один штраф; отмена клубом – штрафа нет (TC-11)</td>
+<td>S2-30, S2-05, S2-07</td>
+</tr>
+<tr>
+<td>S2-33</td>
+<td>Ворота записи в <code>clients</code>: <code>registerBookingGate</code>, необязательный параметр обхода в <code>assertCanBook</code> (сигнатура K9 совместима)</td>
+<td><code>apps/api/src/modules/clients/index.ts</code>, <code>tests/clients/gate.test.ts</code></td>
+<td>без ворот поведение Э1 не изменилось (тесты Э1 зелёные); ворота с отказом роняют <code>assertCanBook</code></td>
+<td>КТ B</td>
+</tr>
+<tr>
+<td>S2-34</td>
+<td>Ворота −50 модуля <code>loyalty</code></td>
+<td><code>modules/loyalty/gate.ts</code>, <code>apps/api/src/server.ts</code>, <code>tests/loyalty/gate.test.ts</code></td>
+<td>при −50 <code>confirmHold</code> → <code>LOYALTY_LIMIT_REACHED</code>; при −49,5 проходит (07 §9.4, без ручной разблокировки)</td>
+<td>S2-33, S2-30</td>
+</tr>
+<tr>
+<td>S2-35</td>
+<td>Проверка −50 в удержании и обход в CRM</td>
+<td><code>apps/api/src/modules/booking/hold.ts</code>, <code>apps/api/src/modules/booking/change.ts</code>, <code>tests/booking/loyalty-limit.test.ts</code></td>
+<td>TC-10 «новая запись блокируется»: <code>createHold</code> известного клиента и <code>attachHold</code> → отказ; бронь в CRM: Администратор – отказ, Директор с причиной – бронь и запись аудита (R-13)</td>
+<td>S2-34</td>
+</tr>
+<tr>
+<td>S2-36</td>
+<td>Резерв на время удержания: создание, перенос на бронь, снятие; обработчики <code>hold.*</code>, <code>booking.*</code>, <code>no_show.marked</code></td>
+<td><code>modules/loyalty/reserve.ts</code>, <code>apps/api/src/worker.ts</code>, <code>tests/loyalty/reserve.test.ts</code></td>
+<td>TC-05/06 с резервом: продление удержания продлевает резерв, истечение снимает; изменение удержания (добавление, удаление позиции, отказ клиента) → резерв не считается занятым по <code>holdSignature</code> и статусу удержания без события (K15 §3, ленивое снятие); оплата брони не баллами → <code>released(paid_other)</code>; два параллельных резерва на один баланс → один <code>POINTS_INSUFFICIENT</code></td>
+<td>S2-30</td>
+</tr>
+<tr>
+<td>S2-37</td>
+<td>Способ оплаты <code>points</code> (списание FEFO, гашение резерва, возврат в партии)</td>
+<td><code>modules/loyalty/payment-method.ts</code>, <code>apps/api/src/server.ts</code>, <code>tests/loyalty/payment-method.test.ts</code></td>
+<td>минуты × 100; <code>POINTS_INSUFFICIENT</code> с двумя числами (07 §6.2); <code>POINTS_NOT_ALLOWED</code> для комнаты целиком (Q-42); баланс не уходит ниже 0</td>
+<td>S2-36, S2-06</td>
+</tr>
+<tr>
+<td>S2-38</td>
+<td>Ручная корректировка и задача истечения партий</td>
+<td><code>modules/loyalty/adjust.ts</code>, <code>apps/api/src/worker.ts</code>, <code>tests/loyalty/adjust.test.ts</code></td>
+<td>без причины → <code>COMMENT_REQUIRED</code>; ниже −50 без права – <code>LIMIT_OVERRIDE_NOT_ALLOWED</code>; <code>batch_ttl_days=null</code> – задача ничего не делает; при сроке – <code>loyalty.expire</code> и FEFO</td>
+<td>S2-30</td>
+</tr>
+<tr>
+<td>S2-39</td>
+<td>Миграция 0207 и товары за баллы: каталог, выдача, возврат</td>
+<td><code>db/migrations/0207_loyalty_goods.sql</code>, <code>modules/loyalty/goods.ts</code>, <code>tests/loyalty/goods.test.ts</code></td>
+<td>только целиком (Q-47); остаток товара под блокировкой; невыданный – возврат в партии с причиной (07 §7.2)</td>
+<td>S2-30</td>
+</tr>
+<tr>
+<td>S2-40</td>
+<td>API CRM баллов №24–28</td>
+<td><code>modules/loyalty/routes.crm.ts</code>, <code>apps/api/src/server.ts</code>, <code>tests/loyalty/routes.crm.test.ts</code></td>
+<td>IDOR; Администратор не корректирует; клиент чужой зоны – <code>404</code></td>
+<td>S2-38, S2-39</td>
+</tr>
+<tr>
+<td>S2-41</td>
+<td>API ЛК баллов: <code>/me/loyalty</code>, история, резерв на удержание, каталог</td>
+<td><code>modules/loyalty/routes.public.ts</code>, <code>apps/api/src/server.ts</code>, <code>tests/loyalty/routes.public.test.ts</code></td>
+<td>только своя карточка; в истории нет внутренних комментариев (03 §8.3); резерв чужого удержания → <code>RESERVE_HOLD_INVALID</code></td>
+<td>S2-36, S2-37</td>
+</tr>
+</tbody></table>
+</div><p><strong>Поток «Сертификаты» (П8c, K16)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Что делаем</th>
+<th>Файлы / зона</th>
+<th>Проверка</th>
+<th>Зависит</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2-50</td>
+<td>Миграция 0204, номер и код, <code>expiryOf</code>, продажа одной проводкой с поступлением в кассу</td>
+<td><code>db/migrations/0204_certificates.sql</code>, <code>apps/api/src/modules/certificates/sale.ts</code>, <code>tests/certificates/sale.test.ts</code></td>
+<td>TC-08 (продажа): одна операция кассы в филиале продажи; 31.08 → 28/29.02; код не попал в лог, аудит и <code>idempotency_keys</code>; повтор продажи – ответ без кода; <code>UPDATE nominal_kop</code> → <code>42501</code></td>
+<td>S2-04, S2-11, S2-08</td>
+</tr>
+<tr>
+<td>S2-51</td>
+<td>Способ оплаты <code>certificate</code>: погашение, режим <code>drain</code> для флага R-03, возврат погашения</td>
+<td><code>modules/certificates/payment-method.ts</code>, <code>apps/api/src/server.ts</code>, <code>tests/certificates/payment-method.test.ts</code></td>
+<td>TC-08 (погашение без дохода); сверх остатка и истёкший – отказ (18 §6.3); два параллельных погашения – остаток ≥ 0 (срок и остаток перечитываются после <code>lockAccounts</code>, <code>BALANCE_BELOW_LIMIT</code> → <code>CERTIFICATE_INSUFFICIENT</code>); неверный код увеличивает <code>pin_failed_count</code> в отдельной короткой транзакции и не откатывается вместе с отказом; возврат после срока – <code>not_restored</code></td>
+<td>S2-50, S2-06</td>
+</tr>
+<tr>
+<td>S2-52</td>
+<td>Жизненный цикл: задача сгорания, отмена продажи, корректировка, «требует проверки», получатель</td>
+<td><code>modules/certificates/lifecycle.ts</code>, <code>apps/api/src/worker.ts</code>, <code>tests/certificates/lifecycle.test.ts</code></td>
+<td>TC-08 (сгорание отдельной записью, касса не меняется); отмена использованного → <code>CERTIFICATE_USED</code>; корректировка выше номинала – отказ</td>
+<td>S2-50</td>
+</tr>
+<tr>
+<td>S2-53</td>
+<td>API CRM сертификатов №29–36</td>
+<td><code>modules/certificates/routes.crm.ts</code>, <code>apps/api/src/server.ts</code>, <code>tests/certificates/routes.crm.test.ts</code></td>
+<td>IDOR; Администратор не продаёт (08 §4.1) и не корректирует; 5 неверных кодов → <code>CERTIFICATE_PIN_LOCKED</code></td>
+<td>S2-51, S2-52</td>
+</tr>
+<tr>
+<td>S2-54</td>
+<td>API ЛК «Мои сертификаты»</td>
+<td><code>modules/certificates/routes.public.ts</code>, <code>apps/api/src/server.ts</code>, <code>tests/certificates/routes.public.test.ts</code></td>
+<td>видны только свои (получатель или покупатель без получателя); у истёкшего – сгоревшая сумма; кода в ответе нет</td>
+<td>S2-52</td>
+</tr>
+</tbody></table>
+</div><p><strong>Поток «CRM-экраны» (П3)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Что делаем</th>
+<th>Файлы / зона</th>
+<th>Проверка</th>
+<th>Зависит</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2-60</td>
+<td>Раздел «Финансы»: журнал движения и сводка филиала/сети</td>
+<td><code>apps/crm/src/pages/finance/[...path].astro</code>, <code>apps/crm/src/islands/CashJournal.tsx</code>, <code>apps/crm/tests/finance.spec.ts</code></td>
+<td>Playwright 1440 и 390 px; колонки 06 §10; Директор видит только свою зону; пустое состояние</td>
+<td>S2-14, S2-15</td>
+</tr>
+<tr>
+<td>S2-61</td>
+<td>Формы дохода и расхода с предпросмотром остатка, дерево категорий</td>
+<td><code>apps/crm/src/islands/OperationForm.tsx</code>, <code>apps/crm/src/islands/CategoryTree.tsx</code>, <code>apps/crm/tests/finance-forms.spec.ts</code></td>
+<td>состояния 06 §13.4; остаток после показан до сохранения (06 §8); двойной клик – одна операция</td>
+<td>S2-60</td>
+</tr>
+<tr>
+<td>S2-62</td>
+<td>Кассовая смена</td>
+<td><code>apps/crm/src/islands/CashShift.tsx</code>, <code>apps/crm/src/pages/finance/[...path].astro</code>, <code>apps/crm/tests/cash-shift.spec.ts</code></td>
+<td>при выключенном флаге экрана нет; Администратор вводит пересчёт вслепую</td>
+<td>S2-17, S2-60</td>
+</tr>
+<tr>
+<td>S2-63</td>
+<td>Оплата в карточке брони: способы от сервера, проверка сертификата, возврат</td>
+<td><code>apps/crm/src/islands/PaymentPanel.tsx</code>, <code>apps/crm/src/islands/BookingCard.tsx</code>, <code>apps/crm/tests/payment.spec.ts</code></td>
+<td>двойной клик → один платёж; <code>ALREADY_PAID</code> показывает проведённый платёж; при <code>topup=false</code> второй строки нет (TC-07 в интерфейсе)</td>
+<td>S2-22</td>
+</tr>
+<tr>
+<td>S2-64</td>
+<td>«К оплате» и статус оплаты в календаре</td>
+<td><code>apps/crm/src/islands/UnpaidList.tsx</code>, <code>apps/crm/src/islands/BranchCalendar.tsx</code>, <code>apps/crm/tests/unpaid.spec.ts</code></td>
+<td>пришедший без оплаты – в списке; после оплаты исчезает; время – по зоне филиала</td>
+<td>S2-22</td>
+</tr>
+<tr>
+<td>S2-65</td>
+<td>Бонусный счёт в карточке клиента: баланс, доступно, резерв, история, причина блокировки, корректировка, issues</td>
+<td><code>apps/crm/src/islands/LoyaltyBlock.tsx</code>, <code>apps/crm/src/pages/clients/[...path].astro</code>, <code>apps/crm/tests/loyalty.spec.ts</code></td>
+<td>Администратор не видит кнопку корректировки и не может её вызвать (сервер); пометка «по расписанию» (07 §4.3)</td>
+<td>S2-40</td>
+</tr>
+<tr>
+<td>S2-66</td>
+<td>Товары за баллы: каталог и выдача</td>
+<td><code>apps/crm/src/islands/GoodsCatalog.tsx</code>, <code>apps/crm/src/pages/goods/[...path].astro</code>, <code>apps/crm/tests/goods.spec.ts</code></td>
+<td>цены в ₽ и баллах раздельно; нехватка – выдача недоступна</td>
+<td>S2-40</td>
+</tr>
+<tr>
+<td>S2-67</td>
+<td>Сертификаты: список с «истекающими», карточка с 8 разделами 08 §11.2</td>
+<td><code>apps/crm/src/pages/certificates/[...path].astro</code>, <code>apps/crm/src/islands/CertificateCard.tsx</code>, <code>apps/crm/tests/certificates.spec.ts</code></td>
+<td>крупно номер, статус, остаток, дата; Администратор – без отмены и корректировки</td>
+<td>S2-53</td>
+</tr>
+<tr>
+<td>S2-68</td>
+<td>Продажа сертификата: номер и код один раз, печать, предупреждение R-03</td>
+<td><code>apps/crm/src/islands/SellCertificateForm.tsx</code>, <code>apps/crm/src/pages/certificates/[...path].astro</code>, <code>apps/crm/tests/certificate-sale.spec.ts</code></td>
+<td>после закрытия окна код не получить; повтор нажатия – один сертификат</td>
+<td>S2-67</td>
+</tr>
+</tbody></table>
+</div><p><strong>Поток «ЛК и сайт» (П5/П6)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Что делаем</th>
+<th>Файлы / зона</th>
+<th>Проверка</th>
+<th>Зависит</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2-70</td>
+<td>ЛК «Баллы»: баланс, доступно, резерв, ближайшее истечение, история, каталог, сообщение о −50</td>
+<td><code>apps/site/src/islands/Loyalty.tsx</code>, <code>apps/site/src/pages/account/index.astro</code>, <code>apps/site/tests/account-loyalty.spec.ts</code></td>
+<td>07 §12.1–12.2, §9.2–9.3: ЛК и история при −50 доступны; 390 px без горизонтальной прокрутки</td>
+<td>S2-41</td>
+</tr>
+<tr>
+<td>S2-71</td>
+<td>ЛК «Мои сертификаты»</td>
+<td><code>apps/site/src/islands/MyCertificates.tsx</code>, <code>apps/site/src/pages/account/index.astro</code>, <code>apps/site/tests/account-certificates.spec.ts</code></td>
+<td>08 §10; заглушка «появится позже» Э1 убрана</td>
+<td>S2-54</td>
+</tr>
+<tr>
+<td>S2-72</td>
+<td>Оформление: «оплатить баллами» с резервом, баннер −50 в расписании</td>
+<td><code>apps/site/src/islands/Checkout.tsx</code>, <code>apps/site/src/islands/Schedule.tsx</code>, <code>apps/site/tests/checkout-points.spec.ts</code></td>
+<td>баллов мало – выбор недоступен, доплаты нет (07 §6.2); при −50 текст 07 §9.2 до выбора слота; таймер удержания = срок резерва</td>
+<td>S2-41, S2-35</td>
+</tr>
+</tbody></table>
+</div><p><strong>Проверки этапа (ПТ)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Что делаем</th>
+<th>Файлы / зона</th>
+<th>Проверка</th>
+<th>Зависит</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2-80</td>
+<td>Ночная сверка 16 §14: <code>verifyBalance</code> всех счетов K3, <code>Σ партий = max(0, баланс)</code>, остаток сертификата = номинал − погашения − сгорание ± корректировки, касса = операции; модуль <code>reports</code> только читает (3.2)</td>
+<td><code>apps/api/src/modules/reports/reconcile.ts</code>, <code>apps/api/src/worker.ts</code>, <code>tests/reports/reconcile.test.ts</code></td>
+<td>подменённый тестом кэш баланса → расхождение в логе уровня <code>error</code> (17 §13); чистые данные – ноль расхождений</td>
+<td>S2-20, S2-30, S2-50</td>
+</tr>
+<tr>
+<td>S2-81</td>
+<td>Тестовые данные Э2: начальные остатки, категории, сертификаты, баллы, оплаченные и неоплаченные брони</td>
+<td><code>db/seed/commerce.ts</code>, <code>tests/seed-commerce.test.ts</code></td>
+<td>повтор не плодит дубли; демо помечено и не попадает на прод (19 §10.1)</td>
+<td>S2-20, S2-39, S2-52</td>
+</tr>
+<tr>
+<td>S2-82</td>
+<td>Сквозные сценарии 18 §6.3 (10 штук) на API и в CRM</td>
+<td><code>tests/finance/commerce-e2e.test.ts</code>, <code>apps/crm/tests/commerce.spec.ts</code></td>
+<td>все 10 зелёные на стенде; отчёт Playwright в CI</td>
+<td>S2-63, S2-65, S2-68, S2-72</td>
+</tr>
+<tr>
+<td>S2-83</td>
+<td>Нагрузка гонок денег: 100 параллельных оплат одной брони, двойное погашение сертификата, списание баллов против штрафа</td>
+<td><code>tests/load/money-race.ts</code> (<code>npm run load:money</code>)</td>
+<td>ноль второго живого платежа, ноль отрицательных остатков сертификатов, <code>Σ партий = max(0, баланс)</code> после прогона (запрос к базе)</td>
+<td>S2-22, S2-37, S2-51</td>
+</tr>
+</tbody></table>
+</div><p>Итого: 52 шага кода + S2-00 (S2-07 и S2-08 добавлены по ревью архитектуры 02.11). Файлы <code>server.ts</code> (9 шагов) и <code>worker.ts</code> (6 шагов) правят 15 шагов разных потоков строками регистрации – конфликт слияния тривиальный, сливает техлид.</p>
+<p><strong>Потоки и параллельность.</strong> Одновременно – не больше 3 потоков кода (5.2).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Поток</th>
+<th>Шаги</th>
+<th>Старт после</th>
+<th>Можно параллельно с</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Подготовка</td>
+<td>S2-00…S2-08</td>
+<td>КТ B</td>
+<td>– (первая, ~1 день)</td>
+</tr>
+<tr>
+<td>П8a Касса → Оплата → Смена</td>
+<td>S2-10…S2-15, затем S2-20…S2-22 (S2-20 ждёт слитых S2-30 и S2-50: FK 0205 → 0203, 0204), затем S2-16, S2-17</td>
+<td>S2-02, S2-07</td>
+<td>П8b; П8c после S2-11</td>
+</tr>
+<tr>
+<td>П8b Баллы</td>
+<td>S2-30…S2-41</td>
+<td>S2-03, S2-05, S2-06</td>
+<td>П8a, П8c</td>
+</tr>
+<tr>
+<td>П8c Сертификаты</td>
+<td>S2-50…S2-54</td>
+<td>S2-04, S2-11</td>
+<td>П8a, П8b</td>
+</tr>
+<tr>
+<td>П3 CRM-экраны</td>
+<td>S2-60…S2-68</td>
+<td>API своего раздела (S2-14, S2-22, S2-40, S2-53)</td>
+<td>заменяет закончивший поток API</td>
+</tr>
+<tr>
+<td>П5/П6 ЛК и сайт</td>
+<td>S2-70…S2-72</td>
+<td>S2-41, S2-54, S2-35</td>
+<td>П3</td>
+</tr>
+<tr>
+<td>ПТ</td>
+<td>S2-80…S2-83</td>
+<td>API всех трёх потоков</td>
+<td>П3, П5/П6</td>
+</tr>
+</tbody></table>
+</div><p><strong>Точки схода</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Сход</th>
+<th>Потоки</th>
+<th>Проверка схода</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>С9 – номера миграций</td>
+<td>П8a + П8b + П8c</td>
+<td>0201 → 0202 → 0203 → 0204 → 0205 → 0206 → 0207 слиты по порядку; <code>migrate up</code> на копии стенда без «порядок нарушен»</td>
+</tr>
+<tr>
+<td>С10 – оплата всеми способами</td>
+<td>S2-20 + S2-37 + S2-51</td>
+<td>TC-07 на настоящих обработчиках: каждая пара – отказ, при флаге R-03 – только «сертификат + деньги»</td>
+</tr>
+<tr>
+<td>С11 – начисление по живым событиям</td>
+<td>S2-22 + S2-31</td>
+<td>TC-09 через outbox: приход → оплата → одно начисление; оплата баллами → нет</td>
+</tr>
+<tr>
+<td>С12 – блокировка −50</td>
+<td>S2-32 + S2-35 + K5</td>
+<td>TC-10 целиком: штраф до −50, сайт и CRM не создают удержание и бронь, Директор обходит с причиной</td>
+</tr>
+<tr>
+<td>С13 – резерв и удержание</td>
+<td>S2-36 + S2-72</td>
+<td>таймер на сайте и резерв истекают одновременно (TC-05/06), отмена брони снимает резерв</td>
+</tr>
+<tr>
+<td>С14 – касса без двойного дохода</td>
+<td>S2-15 + S2-20 + S2-50 + S2-51</td>
+<td>TC-08 в сводке: продажа – одно поступление, погашение и баллы – только в <code>nonMoney</code></td>
+</tr>
+<tr>
+<td>С15 – КТ C</td>
+<td>все Э2</td>
+<td>ниже</td>
+</tr>
+</tbody></table>
+</div><p><strong>TC, которые закрывают шаги:</strong> TC-07 – S2-20, S2-37, S2-51, S2-63, сход С10; TC-08 – S2-50, S2-51, S2-52, S2-15, сход С14; TC-09 – S2-31, сход С11; TC-10 – S2-32, S2-34, S2-35, сход С12; TC-11 (часть «штраф не начисляется») – S2-32; TC-20 (касса) – S2-15, целиком – Э4.4. 18 §6.3: п.1 – S2-20; п.2 – S2-20/С10; п.3–5 – S2-51; п.6 – S2-14/С14; п.7 – S2-31; п.8 – S2-32; п.9 – S2-30, S2-37; п.10 – S2-13, S2-21. Все 10 – S2-82.</p>
+<p><strong>КТ C:</strong> 18 §6.5 + TC-07…TC-10 зелёные + S2-82, S2-83 зелёные + ночная сверка S2-80 без расхождений на стенде + <code>deploy-check</code> GO + <code>change-reviewer</code> на итоговый diff этапа.</p>
+<p><strong>Оценка.</strong> Вилка 7.2 (16 / 22 / 30) не пересчитывалась; шагов в Э2 почти вдвое больше, чем в Э1 (50 против 28), поэтому реалистичная оценка – ближе к 30 дням. Пересчёт – после S2-00 и ревью архитектуры.</p>
+<h4 id="h-6-4-3-вопросы-без-которых-э2-нельзя-выпустить-в-бой">6.4.3. Вопросы, без которых Э2 нельзя выпустить в бой</h4><p>Разработку они не держат: везде стоит умолчание, переключаемое настройкой или данными. Но включать деньги, баллы и сертификаты на живом филиале без ответа нельзя – иначе меняются деньги клиентов задним числом.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>№</th>
+<th>Вопрос</th>
+<th>Почему держит выпуск</th>
+<th>Что сейчас в системе</th>
+<th>Как меняется</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Q-24 / R-03: остаток сертификата меньше цены – сгорает или доплата деньгами</td>
+<td>20 §6: «Критический, до включения погашения»; жалобы клиентов</td>
+<td>строгий запрет</td>
+<td>флаг <code>payment.certificate_topup_enabled</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Q-86 + 08 §2 п.10: текст оферты с условием сгорания сертификата</td>
+<td>продавать сертификат без условия в оферте нельзя (08, приёмка 24)</td>
+<td>–</td>
+<td>текст от юриста заказчика</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Q-23: где пробиваются чеки 54-ФЗ за сеансы и сертификаты</td>
+<td>юридический риск клуба (вывод плана, 06 §2 п.7)</td>
+<td>поле «чек пробит»</td>
+<td>решение заказчика, система не фискализирует</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Q-20: оплата только после прихода, без предоплаты</td>
+<td>от этого зависит, когда закрывается сеанс и начисляются баллы</td>
+<td>оплата при <code>arrived</code>/<code>completed</code></td>
+<td>предоплата – новая работа, не флаг</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Q-22 и Q-28: два места денег, сверка смены, отрицательная касса, закрытие месяца</td>
+<td>без этого не настроить кассу филиала и регламент Администратора</td>
+<td>два места; смена выключена; минус запрещён; месяц закрывает Владелец</td>
+<td>флаги <code>finance.cash_shift_enabled</code>, <code>finance.negative_balance_allowed</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Q-29 / R-14: кто что делает с деньгами – ручной доход Администратором, продажа сертификата Администратором (08 §4.1 «только при праве»), возвраты</td>
+<td>20 §6: R-14 «Критический, до выдачи рабочих доступов»</td>
+<td>Администратор: оплаты, расходы; продажа и возвраты – Директор и Владелец</td>
+<td>правка <code>MATRIX</code> (S2-01), до Э3 – без делегирования</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Q-44 / R-07: штраф −5 за бронь или за визит</td>
+<td>20 §6: «Критический, до автоматических штрафов»</td>
+<td>за визит (брони подряд = один штраф)</td>
+<td>настройка <code>loyalty.penalty_scope</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Q-45 / R-13: запись клиента с балансом −50</td>
+<td>тупик −50 (план, риск 7)</td>
+<td>обход только Директором и Владельцем с причиной</td>
+<td>правка <code>MATRIX</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Q-40 / R-06: баллы по расписанию или по факту; за оплату баллами и сертификатом</td>
+<td>20 §6: «Высокий, до запуска начислений»; экономика с первого дня</td>
+<td>по расписанию; за баллы – нет; за сертификат – да</td>
+<td>флаги <code>loyalty.accrue_for_*</code>; «по факту» – новая работа (учёт фактического времени)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Q-41: округление начисления вниз до 0,5 балла</td>
+<td>начисленное не пересчитывается задним числом</td>
+<td>вниз до 0,5</td>
+<td>константа в <code>pointsForMinutes</code> (K3), хранение в сотых – без миграции</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Q-16 / R-04: что такое «один сеанс» в составном визите</td>
+<td>20 §6: «до оплаты составного визита»</td>
+<td>сеанс = бронь</td>
+<td>смена – правка K10 и миграция (не флаг)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Q-26: сертификат на предъявителя по номеру и коду; перевод как способ продажи; возврат денег за неиспользованный</td>
+<td>без этого нет регламента продажи и погашения на кассе</td>
+<td>на предъявителя, номер + код; продажа нал/безнал/перевод; возврат – отменой продажи до использования</td>
+<td>настройка <code>certificate.sale_methods</code>; именной – новая работа</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Начальные остатки кассы каждого места денег на дату старта и утверждение справочника категорий 06 §7.3</td>
+<td>без начального остатка любой расход упрётся в запрет минуса (разбор 05–08, модуль 06, дыра 6)</td>
+<td>категории – предложение 06 §7.3</td>
+<td>данные заказчика, ввод Владельцем</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Q-102: снимать ли баллы при полном возврате денег</td>
+<td>иначе клиент получает баллы за непроданный сеанс или теряет их без объяснения</td>
+<td>полный возврат сторнирует начисление, частичный – нет</td>
+<td>правка обработчика <code>payment.refunded</code> (K15 §4)</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Q-104: кто возвращает деньги, если посещение отменено после оплаты</td>
+<td>16 §5: исправление посещения платёж не трогает – нужен регламент</td>
+<td>вручную, Директор или Владелец с причиной</td>
+<td>регламент, кода нет</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Q-105: 4 или 6 цифр кода сертификата, сколько попыток</td>
+<td>от этого зависит стойкость к подбору на кассе</td>
+<td>4 цифры, 5 попыток, блок 15 минут</td>
+<td>константы K16 §3; уже выданные коды не меняются</td>
+</tr>
+</tbody></table>
+</div><p>Выпускаются по умолчанию без вреда (ответ желателен, но не держит): Q-43 / R-05 (срок баллов – бессрочно, FEFO), Q-42 (комната целиком баллами не оплачивается), Q-46 (неявка на бонусную бронь снимает резерв без списания), Q-47 (товары – только целиком), Q-48 (корректирует Директор и Владелец), Q-25 (выручка сертификата – в филиале продажи), Q-27 (срок до конца дня по зоне филиала продажи), Q-21 (все три денежных способа с первого дня), Q-103 (штраф при балансе ниже −50 по праву Владельца – 0).</p>
+<hr>
 <h2 id="s7">7. Критический путь и сроки</h2><h3 id="h-7-1-критический-путь">7.1. Критический путь</h3><p>Решения N-01, R-01, R-02, R-18 → S0-00 (ADR, контракты) → S0-01 → S0-02 → S0-06 → S0-09 → S0-10 → S0-11 → S0-12 / S0-15 → КТ A → S1-01 → S1-02 → S1-04 → S1-05 → S1-06 → S1-07 → S1-08 → S1-18 → S1-19 → S1-20 → S1-27 → <strong>КТ B</strong> → Э2.1 → Э2.2 → Э2.3 → <strong>КТ C</strong> → Э3.3 (мероприятия зависят от кассы) → <strong>КТ D</strong> → Э4.4 (отчёты читают всё) → <strong>КТ E</strong> → Э5 → пилот → <strong>КТ F</strong>. До КТ B путь собран по колонке «Зависит» таблиц 6.1–6.2; после КТ B – на уровне эпиков (5.2).</p>
 <p>Вне критического пути (идут параллельно): клиент и ЛК (П5) до схода С1; уведомления (П7); экраны CRM (П3); CMS (Э4.2 можно начать после КТ A); смены и оборудование Э3.1–Э3.2 после КТ B; аудит репо, если доступ дадут до S1-18.</p>
 <p>Если аудит репо задерживается дольше КТ A – сайт становится критическим путём (ветка D в 3.6).</p>
@@ -2065,6 +2864,14 @@ deploy/        compose, Caddy, бэкап</code></pre></div><h3 id="h-6-1-эта
 <td>0 минут; кроме подарка имениннику (см. Q-72)</td>
 <td><span class="badge def">открыт, работаем по умолчанию</span></td>
 </tr>
+<tr class="block">
+<td>Q-101</td>
+<td>С какого момента можно отметить приход и как обрабатывать опоздание (документ «Посещения, неявки и штрафы» отсутствует)</td>
+<td>сквозной e2e 02.11; 16 §5</td>
+<td><span class="blk">Б1</span></td>
+<td>не раньше чем за 30 мин до начала, настройка visit.arrive_early_min (сеть/город/филиал); опоздание – без ограничений до конца сеанса</td>
+<td><span class="badge def">открыт, работаем по умолчанию</span></td>
+</tr>
 </tbody></table>
 </div><h3 id="h-в-деньги-касса-сертификаты">В. Деньги, касса, сертификаты</h3><div class="table-wrap"><table>
 <thead>
@@ -2155,6 +2962,22 @@ deploy/        compose, Caddy, бэкап</code></pre></div><h3 id="h-6-1-эта
 <td>06 §18 в.3; 16 §19 п.17, 20</td>
 <td><span class="blk">Б2</span></td>
 <td>Администратор – оплаты сеансов и расходы своего филиала; корректировки и возвраты – Директор и Владелец</td>
+<td><span class="badge def">открыт, работаем по умолчанию</span></td>
+</tr>
+<tr class="block">
+<td>Q-104</td>
+<td>Кто и как возвращает деньги, если посещение исправлено (отменено) после оплаты</td>
+<td>16 §5 «исправление посещения не удаляет платёж»; 16 §7.5; ревью архитектуры Э2 02.11</td>
+<td><span class="blk">Б2</span></td>
+<td>вручную: сотрудник с правом возврата (Директор, Владелец) оформляет возврат с причиной; автоматического возврата нет</td>
+<td><span class="badge def">открыт, работаем по умолчанию</span></td>
+</tr>
+<tr class="block">
+<td>Q-105</td>
+<td>Сколько цифр в коде сертификата и сколько попыток ввода</td>
+<td>08 §4.2, §7; Q-26; K16 §3; ревью архитектуры Э2 02.11</td>
+<td><span class="blk">Б2</span></td>
+<td>4 цифры; 5 неверных попыток – блок ввода на 15 минут</td>
 <td><span class="badge def">открыт, работаем по умолчанию</span></td>
 </tr>
 </tbody></table>
@@ -2331,6 +3154,22 @@ deploy/        compose, Caddy, бэкап</code></pre></div><h3 id="h-6-1-эта
 <td>07 §17 в.9</td>
 <td><span class="blk">Б2</span></td>
 <td>Директор и Владелец, с причиной</td>
+<td><span class="badge def">открыт, работаем по умолчанию</span></td>
+</tr>
+<tr class="block">
+<td>Q-102</td>
+<td>Снимать ли начисленные баллы, если деньги за сеанс полностью вернули</td>
+<td>07 §4.4, §10; 16 §7.5; ревью архитектуры Э2 02.11</td>
+<td><span class="blk">Б2</span></td>
+<td>да: полный возврат платежа сторнирует начисление за этот сеанс (как исправление посещения); частичный – не трогает</td>
+<td><span class="badge def">открыт, работаем по умолчанию</span></td>
+</tr>
+<tr class="block">
+<td>Q-103</td>
+<td>Штраф за неявку, если баланс уже ниже −50 (туда его может увести только ручная корректировка Владельца со спецправом)</td>
+<td>07 §9.1, §10.3; K15 §5; ревью архитектуры Э2 02.11</td>
+<td><span class="blk">Б2</span></td>
+<td>штраф 0: событие неявки пишется, баланс не меняется</td>
 <td><span class="badge def">открыт, работаем по умолчанию</span></td>
 </tr>
 </tbody></table>
@@ -2771,7 +3610,7 @@ deploy/        compose, Caddy, бэкап</code></pre></div><h3 id="h-6-1-эта
 </tr>
 </tbody></table>
 </div></section>
-<footer>Обновлено 01.11.2026</footer>
+<footer>Обновлено 02.11.2026</footer>
 </div>
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
